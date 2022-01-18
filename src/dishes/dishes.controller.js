@@ -33,13 +33,9 @@ function hasData(req, res, next) {
     next({ status: 400, message: errorMessage("image_url") });
   }
 
-  res.locals.name = name;
-  res.locals.description = description;
-  res.locals.price = price;
-  res.locals.image_url = image_url;
-  //   res.locals.values = { name, description, price, image_url };
+  res.locals.values = { name, description, price, image_url };
   if (id) {
-    res.locals.id = id;
+    res.locals.values.id = id;
   }
 
   next();
@@ -57,7 +53,7 @@ function dishExists(req, res, next) {
 }
 
 function create(req, res) {
-  const { name, description, price, image_url } = res.locals;
+  const { name, description, price, image_url } = res.locals.values;
   newDish = { id: nextId(), name, description, price, image_url };
   dishes.push(newDish);
   res.status(201).json({ data: newDish });
@@ -68,13 +64,10 @@ function read(req, res) {
 }
 
 function update(req, res, next) {
-  let { id, name, description, price, image_url, dish, dishId } = res.locals;
-  //   dish.name = name;
-  //   dish.description = description;
-  //   dish.price = price;
-  //   dish.image_url = image_url;
+  const { id, name, description, price, image_url } = res.locals.values;
+  const dishId = res.locals.dishId;
+  let dish = res.locals.dish;
   dish = { ...dish, name, description, price, image_url };
-  console.log(dish, "---------------------------------------------");
   if (id && id !== dishId) {
     next({
       status: 400,

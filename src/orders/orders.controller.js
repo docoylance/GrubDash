@@ -42,13 +42,11 @@ function hasData(req, res, next) {
       });
     }
   });
+
+  res.locals.values = { deliverTo, mobileNumber, status, dishes };
   if (id) {
-    res.locals.id = id;
+    res.locals.values.id = id;
   }
-  res.locals.deliverTo = deliverTo;
-  res.locals.mobileNumber = mobileNumber;
-  res.locals.status = status;
-  res.locals.dishes = dishes;
   next();
 }
 
@@ -64,8 +62,8 @@ function orderExists(req, res, next) {
 }
 
 function create(req, res) {
-  const { deliverTo, mobileNumber, status, dishes } = res.locals;
-  newOrder = { id: nextId(), deliverTo, mobileNumber, status, dishes };
+  const { deliverTo, mobileNumber, dishes } = res.locals.values;
+  newOrder = { id: nextId(), deliverTo, mobileNumber, dishes };
   orders.push(newOrder);
   res.status(201).json({ data: newOrder });
 }
@@ -75,12 +73,11 @@ function read(req, res) {
 }
 
 function update(req, res, next) {
-  const { id, deliverTo, mobileNumber, status, dishes, order, orderId } =
-    res.locals;
+  const { id, deliverTo, mobileNumber, status, dishes } = res.locals.values;
+  const orderId = res.locals.orderId;
+  let order = res.locals.order;
   const statuses = ["pending", "preparing", "out-for-delivery"];
-  order.deliverTo = deliverTo;
-  order.mobileNumber = mobileNumber;
-  order.dishes = dishes;
+  order = { ...order, deliverTo, mobileNumber, dishes };
   if (id && id !== orderId) {
     next({
       status: 400,
