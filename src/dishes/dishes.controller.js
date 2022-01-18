@@ -33,13 +33,11 @@ function hasData(req, res, next) {
     next({ status: 400, message: errorMessage("image_url") });
   }
 
-
-
-    res.locals.name = name;
-    res.locals.description = description;
-    res.locals.price = price;
-    res.locals.image_url = image_url;
-//   res.locals.values = { name, description, price, image_url };
+  res.locals.name = name;
+  res.locals.description = description;
+  res.locals.price = price;
+  res.locals.image_url = image_url;
+  //   res.locals.values = { name, description, price, image_url };
   if (id) {
     res.locals.id = id;
   }
@@ -70,8 +68,7 @@ function read(req, res) {
 }
 
 function update(req, res, next) {
-  let { id, name, description, price, image_url, dish, dishId } =
-    res.locals;
+  let { id, name, description, price, image_url, dish, dishId } = res.locals;
   //   dish.name = name;
   //   dish.description = description;
   //   dish.price = price;
