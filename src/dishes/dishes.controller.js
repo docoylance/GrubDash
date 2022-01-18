@@ -26,20 +26,24 @@ function hasData(req, res, next) {
   if (!price) {
     next({ status: 400, message: errorMessage("price") });
   }
-  if (isNaN(price) || Number(price) <= 0 || !Number.isInteger(price)) {
+  if (Number(price) <= 0 || !Number.isInteger(price)) {
     next({ status: 400, message: errorMessage("price", true) });
   }
   if (!image_url || image_url.length === 0) {
     next({ status: 400, message: errorMessage("image_url") });
   }
-  
+
+
+
+    res.locals.name = name;
+    res.locals.description = description;
+    res.locals.price = price;
+    res.locals.image_url = image_url;
+//   res.locals.values = { name, description, price, image_url };
   if (id) {
     res.locals.id = id;
   }
-  res.locals.name = name;
-  res.locals.description = description;
-  res.locals.price = price;
-  res.locals.image_url = image_url;
+
   next();
 }
 
@@ -66,11 +70,14 @@ function read(req, res) {
 }
 
 function update(req, res, next) {
-  const { id, name, description, price, image_url, dish, dishId } = res.locals;
-  dish.name = name;
-  dish.description = description;
-  dish.price = price;
-  dish.image_url = image_url;
+  let { id, name, description, price, image_url, dish, dishId } =
+    res.locals;
+  //   dish.name = name;
+  //   dish.description = description;
+  //   dish.price = price;
+  //   dish.image_url = image_url;
+  dish = { ...dish, name, description, price, image_url };
+  console.log(dish, "---------------------------------------------");
   if (id && id !== dishId) {
     next({
       status: 400,
